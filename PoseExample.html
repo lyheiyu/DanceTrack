@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PoseNet Example</title>
+</head>
+<body>
+    <!-- Create a video element for capturing webcam input -->
+<!--    #<video id="video" autoplay playsinline muted></video>-->
+     <video id="video" autoplay></video>
+     <button id="startCameraButton">Start Camera</button>
+    <!-- Create a canvas element for displaying the pose -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Include TensorFlow.js library -->
+ <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+
+    <script>
+        // async function setupCamera() {
+        //
+        //     navigator.mediaDevices.getUserMedia({ video: true })
+        //     .then(function (stream) {
+        //         const video = document.getElementById('video');
+        //         video.srcObject = stream;
+        //
+        //
+        //         console.log('1123')
+        //         video.srcObject = stream;
+        //         console.log(stream)
+        //
+        //          video.onloadedmetadata = () => {
+        //         // The video has loaded successfully
+        //
+        //
+        //
+        //     };
+        //         video.onloadedmetadata = () => {
+        //         // The video has loaded successful
+        //         const videoWidth = video.videoWidth;
+        //         const videoHeight = video.videoHeight;
+        //         alert(videoWidth)
+        //         //resolve({ video, videoWidth, videoHeight });
+        //         resolve(video);
+        //     };
+        //
+        //     video.onerror = (error) => {
+        //         // Handle any errors that occur while loading the video
+        //         reject(error);
+        //     };
+        //
+        //
+        //
+        //         })
+        //     .catch(function (error) {
+        //         console.error('无法打开摄像头:', error);
+        //         // 在无法打开摄像头时显示弹窗
+        //         alert('无法打开摄像头: ' + error.message);
+        //     });
+        //
+        // }
+        async function setupCamera() {
+    return new Promise(async (resolve, reject) => { // Define resolve and reject functions here
+        try {
+            const video = document.getElementById('video');
+            const stream = await navigator.mediaDevices.getUserMedia({ 'audio': false, 'video': true });
+            video.srcObject = stream;
+
+            video.onloadedmetadata = () => {
+                // The video has loaded successfully
+                const videoWidth = video.videoWidth;
+                const videoHeight = video.videoHeight;
+
+                resolve({ video, videoWidth, videoHeight });
+            };
+
+            video.onerror = (error) => {
+                // Handle any errors that occur while loading the video
+                reject(error);
+            };
+        } catch (error) {
+            // Handle any errors that occur when requesting user media
+            reject(error);
+        }
+    });
+}
+
+        async function loadPoseNet() {
+            const net = await posenet.load();
+            console.log(net)
+            console.log(123123)
+            return net;
+        }
+        const cameraOrientation = 'upright'
+        async function detectPose(net, video,vW,vH) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle='black'
+             console.log(video.videoWidth)
+            console.log(video.videoHeight)
+            const videoWidth = vW;
+            const videoHeight = vH;
+            console.log(videoWidth)
+            console.log(videoHeight)
+            video.width = videoWidth;
+            video.height = videoHeight;
+
+            canvas.width = videoWidth;
+            canvas.height = videoHeight;
+
+            while (true) {
+                const ScaleFactor = 1;
+            const flipHorizontal = false;
+                const outputStride = 32;
+                const pose = await net.estimateSinglePose(video, ScaleFactor, flipHorizontal, outputStride);
+
+                ctx.clearRect(0, 0, videoWidth, videoHeight);
+                console.log(pose)
+                if (cameraOrientation === 'upside-down') {
+                    // 翻转图像
+                    ctx.scale(1, -1);
+                    ctx.translate(0, -videoHeight);
+                } else if (cameraOrientation === '90-degree-rotation') {
+                    // 旋转图像 90 度
+                    ctx.translate(videoWidth, 0);
+                    ctx.rotate(Math.PI / 2);
+                }
+                // Draw pose keypoints and lines manually
+                drawPose(pose, ctx);
+
+                await new Promise((resolve) => requestAnimationFrame(resolve));
+            }
+        }
+
+        function drawPose(pose, ctx) {
+            // Define your drawing styles here (e.g., line color, line width, etc.)
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+
+            // Draw keypoints
+            pose.keypoints.forEach((keypoint) => {
+                const { x, y } = keypoint.position;
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fillStyle = 'red';
+                ctx.fill();
+                ctx.stroke();
+            });
+
+            // Draw lines connecting keypoints to represent the pose
+            const adjacentKeyPoints = posenet.getAdjacentKeyPoints(pose.keypoints, 0.5);
+            adjacentKeyPoints.forEach((keypoints) => {
+                drawSegment(ctx, keypoints[0].position, keypoints[1].position, 'red');
+            });
+        }
+
+        function drawSegment(ctx, [ay, ax], [by, bx], color) {
+            ctx.beginPath();
+            ctx.moveTo(ax, ay);
+            ctx.lineTo(bx, by);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = color;
+            ctx.stroke();
+        }
+
+        async function bindPage() {
+            const startCameraButton = document.getElementById('startCameraButton');
+            const net = await loadPoseNet();
+            // let video;
+
+            startCameraButton.addEventListener('click', async () => {
+                const { video, videoWidth, videoHeight } = await setupCamera();
+                startCameraButton.disabled = true;
+                detectPose(net, video,videoWidth,videoHeight);
+             });
+        }
+
+        window.addEventListener('load', bindPage);
+    </script>
+</body>
+</html>
