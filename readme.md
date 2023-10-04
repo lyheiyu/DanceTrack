@@ -1,4 +1,4 @@
-# FRDA: Fingerprint Region based Data Augmentation using Explainable AI for FTIR based Microplastic Classification
+# Dace Track
 
 
 
@@ -6,84 +6,68 @@
 
 ## Introduction
 
+here are just some applications of poseTrack framworks.
 
 
+The repo provide some tools:  
 
-The repo provide 2 tools:  
+- Mediapipe.
 
-- FRDA, a data augmentation tool for FTIR samples
-
-- 1D-CAM, a Explainable AI tool for analysing FTIR samples.
-
-
-
-
-
-## FRDA Usage
+-PoseNet
 
 
 
 
-This repo provides 3 datasets:
 
-- Kedzierski’s
-
-- Jung's
-
-- Hannah's
+## Mediapipe
 
 
 
 
-The FRDA tool performs data augmentation for each dataset and then train and validate different ML models
+Google
 
 
-Kedzierski’s dataset with FRDA
+
+
+
 
 
 
 
 ```
 
-python FTIR_DataAugmentation_Kedzierski.py
+python ....
 
 ```
 
-Jung’s dataset with FRDA
-
-
-
-
-```
-
-python FTIR_DataAugmentation_Jung.py
-
-```
-
-Jung’s dataset with FRDA
 
 
 
 
 ```
 
-python FTIR_DataAugmentation_Hannah.py
+python 
 
 ```
 
-## 1DCAM Usage
-
-The 1D-CAM can be used as follows: 
--	Training a classification model using 1D-CNN layer
--	Creating 1D-CAM based the trained network (using the layer before the output layer and parameters).
--	Inputting the new sample data to classification model and obtaining classification result.
-- Inputting the identical data into 1DCAM and using the classification result to calculate the influence curve. 
 
 
-Generating influence data curve using 1DCAM 
+
+
+
 ```
 
-python FTIR_1DCAM.py
+python 
+
+```
+
+## poseNet
+
+
+HTML
+```
+
+
 
 ```
 
@@ -93,8 +77,8 @@ Use the below bibtex to cite us.
 
 ```BibTeX
 @article{yan2023 FRDA,
-  title={FRDA: Fingerprint Region based Data Augmentation using Explainable AI for FTIR based Microplastic Classification},
-  author={Yan, Xinyu and Cao, Zhi and Murphy, Alan and Ye, Yuhang and Wang, Xinwu and Qiao, Yuansong},
+  title={Dance Track},
+  author={Li, Jiating, Yan, Xinyu},
   journal={},
   volume={},
   number={},
@@ -103,17 +87,15 @@ Use the below bibtex to cite us.
   publisher={Elsevier}
 }
 
-@misc{yan2023ensemble,
-  title={FRDA: Fingerprint Region based Data Augmentation using Explainable AI for FTIR based Microplastic Classification},
+@misc{Li2023ensemble,
+  title={},
   author={Yan, Xinyu and Cao, Zhi and Murphy, Alan and Ye, Yuhang and Wang, Xinwu and Qiao, Yuansong},
   year={2023},
   publisher={Github},
-  howpublished={\url{https://github.com/lyheiyu/Fingerprint-Region-based-Data-Augmentation-using-Explainable-AI-for-FTIR-based-MP-Classification/}},
+  howpublished={\url{https://github.com/lyheiyu/DanceTrack}},
 }
 
 ```
 * * * * *
 
-## Developed by
 
-[Software Research Institute](https://sri-tus.eu/) of [Technological University of the Shannon: Midlands Midwest](https://tus.ie/).
