@@ -13,7 +13,7 @@ The repo provide some tools:  
 
 - Mediapipe.
 
--PoseNet
+- PoseNet
 
 
 
@@ -66,7 +66,7 @@ python
 
 HTML
 ```
-
+PoseExample.html
 
 
 ```
